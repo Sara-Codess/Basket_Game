@@ -82,10 +82,22 @@ basketImg.src = 'data:image/svg+xml;base64,' + btoa(`
       
       
       <g id="basket" transform="translate(150, 500)">
-      <rect x="-100" y="-90" width="350" height="70" rx="10" ry="10" fill="#af571d" stroke="#3f1c0d" stroke-width="3"/>
-      <path d="M0,0 Q -30 -20, -60 0 Z" fill="#e07320"/>
-      <path d="M120,0 Q 150 -20, 180 0 Z" fill="#e07320"/>
-    </g>
+  <!-- Circular bottom of the basket -->
+  <path d="M-80,-90 a140,50 0 0,1 275,0" fill="#af571d" stroke="#3f1c0d" stroke-width="3"/>
+  <!-- Basket body -->
+  <path d="M-80,-90 v70 a140,50 0 0,0 280,0 v-70 z" fill="#af571d" stroke="#3f1c0d" stroke-width="3"/>
+  <!-- Smaller and lighter "X" Lines -->
+  <path d="M-60,-70 L40,-30" stroke="#f1b07a" stroke-width="1.5"/> <!-- Diagonal line 1 -->
+  <path d="M40,-70 L-60,-30" stroke="#f1b07a" stroke-width="1.5"/> <!-- Diagonal line 2 -->
+  <path d="M-40,-70 L20,-30" stroke="#f1b07a" stroke-width="1.5"/> <!-- Diagonal line 3 -->
+  <path d="M20,-70 L-40,-30" stroke="#f1b07a" stroke-width="1.5"/> <!-- Diagonal line 4 -->
+  <path d="M-20,-70 L20,-30" stroke="#f1b07a" stroke-width="1.5"/> <!-- Diagonal line 3 -->
+
+  <!-- Decorations -->
+  <path d="M-40,0 Q -60 -20, -80 0 Z" fill="#e07320"/>
+  <path d="M100,0 Q 120 -20, 140 0 Z" fill="#e07320"/>
+</g>
+
     </g>
   </svg>
 `);
