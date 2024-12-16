@@ -1,19 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basket Catch Game</title>
-  <style>
-    canvas {
-      display: block;
-      margin: 0 auto;
-      border: 2px solid black;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bear Basket Drop</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+            /* margin: auto;
+             */
+            margin: 20px auto;
+            background-color: #e0f7fa;
+            border: 2px solid #6182ba;
+        }
+        #scoreboard {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: #fff;
+    font-weight: bold;
+    background: linear-gradient(135deg, #7bdaba, #7c92ea); /* Soft teddy bear colors */
+    padding: 15px 30px;
+    border-radius: 20px; /* Rounded corners for a bubbly look */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    border: 2px solid #88c6cb; /* Add a matching border */
+    font-family: 'Comic Sans MS', cursive; /* Playful font style */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
+}
+
+    </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="600" height="400"></canvas>
-  <script src="game.js"></script>
+    <div id="scoreboard">Score: 0</div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script src="game.js"></script>
 </body>
 </html>

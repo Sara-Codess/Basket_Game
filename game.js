@@ -1,13 +1,9 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
 // Canvas dimensions
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
-
-// Game colors and properties
-const backgroundColor = '#f0f8ff';
-const itemColor = '#008000';
 
 // Basket (Bear SVG) properties
 const basketWidth = 80;
@@ -21,11 +17,21 @@ let moveLeft = false;
 let moveRight = false;
 
 // Falling item properties
-const itemRadius = 10;
-let items = [];
+const items = [];
+const emojis = [
+    { emoji: "🎨", score: 1 }, // Painting color palette
+    { emoji: "🖌️", score: 1 }, // Paint brush
+    { emoji: "📚", score: 1 }, // Book
+    { emoji: "🎧", score: 1 }, // Headphones
+    { emoji: "🎵", score: 1 }, // Music note
+    { emoji: "⭐", score: 1 }, // Star
+    { emoji: "🩴", score: -1 }, // Flip-flop sandals
+    { emoji: "🧱", score: -1 }, // Brick
+    { emoji: "💣", score: -1 }  // Bomb
+];
 let score = 0;
 
-// Load Bear SVG as an image
+// Load basket image
 const basketImg = new Image();
 basketImg.src = 'data:image/svg+xml;base64,' + btoa(`
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 446.4 686.5" height="5cm" width="auto">
@@ -102,106 +108,76 @@ basketImg.src = 'data:image/svg+xml;base64,' + btoa(`
   </svg>
 `);
 
-// Listen for keyboard events
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') moveLeft = true;
-  if (e.key === 'ArrowRight') moveRight = true;
+// Event listeners for basket movement
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") moveLeft = true;
+    if (e.key === "ArrowRight") moveRight = true;
+});
+document.addEventListener("keyup", (e) => {
+    if (e.key === "ArrowLeft") moveLeft = false;
+    if (e.key === "ArrowRight") moveRight = false;
 });
 
-document.addEventListener('keyup', (e) => {
-  if (e.key === 'ArrowLeft') moveLeft = false;
-  if (e.key === 'ArrowRight') moveRight = false;
-});
-
-// Draw basket (Bear SVG)
-function drawBasket() {
-  ctx.drawImage(basketImg, basketX, basketY, basketWidth, basketHeight);
+// Generate random emoji
+function generateItem() {
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    items.push({
+        emoji: emoji.emoji,
+        score: emoji.score,
+        x: Math.random() * (canvasWidth - 20),
+        y: -20,
+        speed: 2 + Math.random() * 2
+    });
 }
 
-// Update basket position
-function updateBasket() {
-  if (moveLeft && basketX > 0) {
-    basketX -= basketSpeed;
-  }
-  if (moveRight && basketX + basketWidth < canvasWidth) {
-    basketX += basketSpeed;
-  }
-}
+// Update items and basket position
+function updateGame() {
+    if (moveLeft) basketX = Math.max(0, basketX - basketSpeed);
+    if (moveRight) basketX = Math.min(canvasWidth - basketWidth, basketX + basketSpeed);
 
-// Generate random falling items
-function createItem() {
-  const x = Math.random() * (canvasWidth - itemRadius * 2) + itemRadius;
-  const y = -itemRadius;
-  items.push({ x, y });
-}
+    // Update falling items
+    for (let i = items.length - 1; i >= 0; i--) {
+        items[i].y += items[i].speed;
 
-// Draw items
-function drawItems() {
-  ctx.fillStyle = itemColor;
-  items.forEach(item => {
-    ctx.beginPath();
-    ctx.arc(item.x, item.y, itemRadius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.closePath();
-  });
-}
-
-// Update items
-function updateItems() {
-  items.forEach(item => {
-    item.y += 4; // Speed of falling items
-  });
-
-  // Remove items that fall out of the canvas
-  items = items.filter(item => item.y < canvasHeight + itemRadius);
-}
-
-// Check for collisions
-function checkCollisions() {
-  items = items.filter(item => {
-    if (
-      item.y + itemRadius >= basketY && // Item reaches the basket's Y position
-      item.x > basketX &&              // Item is within the basket's left edge
-      item.x < basketX + basketWidth   // Item is within the basket's right edge
-    ) {
-      score++;
-      return false; // Remove the item from the array
+        // Check for collision with basket
+        if (
+            items[i].x < basketX + basketWidth &&
+            items[i].x + 20 > basketX &&
+            items[i].y < basketY + basketHeight &&
+            items[i].y + 20 > basketY
+        ) {
+            score += items[i].score;
+            items.splice(i, 1); // Remove item
+        } else if (items[i].y > canvasHeight) {
+            items.splice(i, 1); // Remove item if it falls off-screen
+        }
     }
-    return true; // Keep the item in the array
-  });
 }
 
-// Draw background
-function drawBackground() {
-  ctx.fillStyle = backgroundColor;
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-}
+// Draw items, basket, and score
+function drawGame() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-// Draw score
-function drawScore() {
-  ctx.fillStyle = '#000';
-  ctx.font = '20px Arial';
-  ctx.fillText(`Score: ${score}`, 10, 30);
+    // Draw basket
+    ctx.drawImage(basketImg, basketX, basketY, basketWidth, basketHeight);
+
+    // Draw falling items
+    items.forEach((item) => {
+        ctx.font = "32px Arial";
+        ctx.fillText(item.emoji, item.x, item.y);
+    });
+
+    // Draw score
+    document.getElementById("scoreboard").textContent = `Score: ${score}`;
 }
 
 // Game loop
-let itemSpawnTimer = 0;
 function gameLoop() {
-  drawBackground();
-  drawBasket();
-  drawItems();
-  drawScore();
-
-  updateBasket();
-  updateItems();
-  checkCollisions();
-
-  // Spawn items every 60 frames (~1 second)
-  if (itemSpawnTimer % 60 === 0) createItem();
-  itemSpawnTimer++;
-
-  requestAnimationFrame(gameLoop);
+    updateGame();
+    drawGame();
+    requestAnimationFrame(gameLoop);
 }
 
-// Start the game
+// Start game
+setInterval(generateItem, 1000);
 gameLoop();
