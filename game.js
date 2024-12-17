@@ -6,8 +6,8 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
 // Basket (Bear SVG) properties
-const basketWidth = 80;
-const basketHeight = 80;
+const basketWidth = 120;
+const basketHeight = 120;
 let basketX = (canvasWidth - basketWidth) / 2; // Center horizontally
 const basketY = canvasHeight - basketHeight - 10;
 
@@ -21,10 +21,11 @@ const items = [];
 const emojis = [
     { emoji: "🎨", score: 1 }, // Painting color palette
     { emoji: "🖌️", score: 1 }, // Paint brush
-    { emoji: "📚", score: 1 }, // Book
+    { emoji: "📙", score: 1 }, // Book
     { emoji: "🎧", score: 1 }, // Headphones
     { emoji: "🎵", score: 1 }, // Music note
     { emoji: "⭐", score: 1 }, // Star
+    { emoji: "☕", score: 1 }, // Coffee
     { emoji: "🩴", score: -1 }, // Flip-flop sandals
     { emoji: "🧱", score: -1 }, // Brick
     { emoji: "💣", score: -1 }  // Bomb
@@ -34,7 +35,7 @@ let score = 0;
 // Load basket image
 const basketImg = new Image();
 basketImg.src = 'data:image/svg+xml;base64,' + btoa(`
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 446.4 686.5" height="5cm" width="auto">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -20 446.4 686.5" height="10cm" width="auto">
     <title>Curious Bear</title>
     <g id="bear">
       <ellipse cx="223.2" cy="637.6" rx="223.2" ry="29" fill="#3F1C0C" opacity="0.3"/>
@@ -163,7 +164,7 @@ function drawGame() {
 
     // Draw falling items
     items.forEach((item) => {
-        ctx.font = "32px Arial";
+        ctx.font = "40px Arial";
         ctx.fillText(item.emoji, item.x, item.y);
     });
 
