@@ -1,3 +1,5 @@
+// game.js
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -19,16 +21,16 @@ let moveRight = false;
 // Falling item properties
 const items = [];
 const emojis = [
-    { emoji: "🎨", score: 1 }, // Painting color palette
-    { emoji: "🖌️", score: 1 }, // Paint brush
-    { emoji: "📙", score: 1 }, // Book
-    { emoji: "🎧", score: 1 }, // Headphones
-    { emoji: "🎵", score: 1 }, // Music note
-    { emoji: "⭐", score: 1 }, // Star
-    { emoji: "☕", score: 1 }, // Coffee
-    { emoji: "🩴", score: -1 }, // Flip-flop sandals
-    { emoji: "🧱", score: -1 }, // Brick
-    { emoji: "💣", score: -1 }  // Bomb
+    { emoji: "🎨", score: 1 },
+    { emoji: "🖌️", score: 1 },
+    { emoji: "📙", score: 1 },
+    { emoji: "🎧", score: 1 },
+    { emoji: "🎵", score: 1 },
+    { emoji: "⭐", score: 1 },
+    { emoji: "☕", score: 1 },
+    { emoji: "🩴", score: -1 },
+    { emoji: "🧱", score: -1 },
+    { emoji: "💣", score: -1 }
 ];
 let score = 0;
 let birthdayMessageShown = false;
@@ -161,18 +163,19 @@ function updateGame() {
                     birthdayMessage = ""; // Clear message after 1 second
                     threeMoreToGoShown = false;
                 }, 1500); // Display for 1 second
-            } else if (score === 21 && !birthdayMessageShown) {
+            } else if (score === 21) {
                 birthdayMessage = "HAPPY 21st BIRTHDAY";
                 birthdayMessageShown = true;
+                startConfetti(); // Start confetti effect
                 setTimeout(() => {
-                    birthdayMessage = ""; // Clear message after 3 seconds
+                  birthdayMessage = ""; // Clear message after 3 seconds
                 }, 3000); // Display for 3 seconds
+              }
+            } else if (items[i].y > canvasHeight) {
+              items.splice(i, 1); // Remove item if it falls off-screen
             }
-        } else if (items[i].y > canvasHeight) {
-            items.splice(i, 1); // Remove item if it falls off-screen
+          }
         }
-    }
-}
 
 // Draw items, basket, and score
 function drawGame() {
@@ -196,15 +199,27 @@ function drawGame() {
             "#f4c2c2", "#b5e7a0", "#f5e0b7", "#a7c7e7", "#f7b7a3","#f3c9d1", "#e0d4b4", "#ffb8b8", "#e1d1f7", "#fbc27b"
         ];
 
-        ctx.textAlign = "center";
         const messageX = canvasWidth / 2;
         const messageY = canvasHeight / 2;
         const messageLength = birthdayMessage.length;
 
-        for (let i = 0; i < messageLength; i++) {
+        if (birthdayMessage == "3 More to Go!") {
+          ctx.textAlign = "center";
+
+          for (let i = 0; i < messageLength; i++) {
             ctx.fillStyle = colors[i % colors.length]; // Cycle through colors
             ctx.font = "40px 'Rubik Bubbles', san serif"; // Use Rubik Puddles font
             ctx.fillText(birthdayMessage[i], messageX + (i * 22) - (messageLength * 11), messageY); // Adjust X for each letter
+          }
+        } else {
+
+          confettiCtx.textAlign = "center";
+          
+          for (let i = 0; i < messageLength; i++) {
+            confettiCtx.fillStyle = colors[i % colors.length]; // Cycle through colors
+            confettiCtx.font = "40px 'Rubik Bubbles', san serif"; // Use Rubik Puddles font
+            confettiCtx.fillText(birthdayMessage[i], messageX + (i * 22) - (messageLength * 11), messageY); // Adjust X for each letter
+          }
         }
     }
 }
@@ -216,6 +231,11 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Start game
-setInterval(generateItem, 1000);
-gameLoop();
+
+const button = document.getElementById("playButton");
+button.addEventListener("click", function () {
+  setInterval(generateItem, 1000); gameLoop();
+  document.getElementById("gameCanvas").style.display = "block"; // Hide confetti canvas
+  document.getElementById("scoreboard").style.display = "block"; // Hide confetti canvas
+  document.getElementById("playButton").style.display = "none"; // Hide confetti canvas
+});
