@@ -32,4 +32,6 @@ This is an emoji-catching game where a bear character catches falling emojis usi
 2. Open the `index.html` file in a browser.
 3. Enjoy playing the game!
    OR
-Go to the link above!
+Go to the link below!
+
+https://sara-codess.github.io/Basket_Game/
